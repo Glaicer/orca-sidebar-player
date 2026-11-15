@@ -1,5 +1,7 @@
 # Sidebar Player
 
+![Sidebar Player in Orca's right sidebar](public/cover.jpg)
+
 Watch videos in Orca's right sidebar while agents work: files from your own folders, or YouTube videos and playlists. Playback pauses when an agent finishes or needs you.
 
 Pick an episode in the folder tree, switch audio tracks, seek with the bar or ←/→ (10 s), pause with Space. The tree remembers which folders you expanded. Paste a YouTube link to play a video, or a playlist to step through with previous/next (up to 1080p).
