@@ -14,6 +14,7 @@ Orca plugin: a video player in the right sidebar. `worker/` (Node, trusted-worke
 - The panel frame has no network or file access. Video bytes reach it only as base64 answers to `plugin.request`, each at most 1 MiB of JSON. So keep worker chunks at ≤700 KiB.
 - Orca allows about 100 `plugin.request` calls per 10 s per plugin. Past that it answers `rate_limited` with `retryAfterMs` ≈ 10 s. `paceRead` in `panel/app.js` keeps buffering at 50 calls and seek reads at 90. Raising the buffer-ahead size or dropping the pacing brings back multi-second seek stalls.
 - `yt-dlp` runs with the user's own config (`~/.config/yt-dlp/config`). With a JS runtime enabled there it prefers TV clients, whose googlevideo URLs answer 403 without a PO token, so `resolveUrl` excludes them. Each call first runs with `--no-cookies-from-browser`, because reading browser cookies costs ~3 s. Only if that fails does it retry with the config's cookies. A 403 from ffprobe on a YouTube link means the client choice broke again: compare `c=` in the URL with `yt-dlp -v`.
+- Orca destroys the panel frame when another sidebar tab is picked, and the panel manifest has no option to keep it alive. Playback can't continue in the background: the panel saves the source and position in `localStorage` and reopens them on load.
 - The frame's Chromium has no AC3/E-AC3/DTS and no HEVC. `planStream` copies H.264 and transcodes everything else, and audio is always AAC.
 
 ## Seeking and A/V sync

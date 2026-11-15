@@ -94,6 +94,7 @@ const keyOf = (source) => source?.path ?? source?.url
 let generation = 0
 let streamId = null
 let restartingAt = null
+let restartAutoplay = false
 let objectUrl = null
 
 function bufferedRange(t) {
@@ -127,6 +128,7 @@ async function evict(sourceBuffer, keepBehind) {
 async function startAt(start, autoplay) {
   const gen = ++generation
   restartingAt = start
+  restartAutoplay = autoplay
   setBusy(true)
   if (streamId !== null) request('close', { id: streamId }).catch(() => {})
   streamId = null
@@ -185,7 +187,7 @@ function play(start, autoplay) {
 }
 
 // `siblings` are what prev/next walk: a file's folder, or the playlist a link came from.
-async function openSource(source, siblings = []) {
+async function openSource(source, siblings = [], start = 0, autoplay = true) {
   const gen = ++generation
   showError(null)
   setBusy(true)
@@ -217,9 +219,10 @@ async function openSource(source, siblings = []) {
   const select = $('audio')
   select.replaceChildren(...info.audio.map((a) => new Option(a.label, String(a.index), false, a.index === current.audio)))
   select.hidden = info.audio.length < 2
+  save('session', { source, siblings })
   updateNav()
   markCurrent()
-  play(0, true)
+  play(start, autoplay)
   prefetchNeighbours()
 }
 
@@ -259,7 +262,17 @@ function renderToggle() {
   $('toggle').innerHTML = video.paused ? ICONS.play : ICONS.pause
   $('toggle').setAttribute('aria-label', video.paused ? 'Play' : 'Pause')
 }
-video.onplay = video.onpause = renderToggle
+// why: Orca destroys the panel frame when another sidebar tab is picked; on return the panel
+// reopens the video where it was.
+function savePosition() {
+  if (!current.source) return
+  const playing = restartingAt === null ? !video.paused : restartAutoplay
+  save('position', { time: restartingAt ?? video.currentTime, playing })
+}
+video.onplay = video.onpause = () => {
+  renderToggle()
+  savePosition()
+}
 renderToggle()
 updateNav()
 
@@ -286,7 +299,10 @@ function renderTime() {
   seek.value = String(t)
   $('elapsed').textContent = formatTime(t)
 }
-video.ontimeupdate = renderTime
+video.ontimeupdate = () => {
+  renderTime()
+  savePosition()
+}
 
 // Pause when any agent in Orca stops working (finished, or waiting on you). A pane seen for the
 // first time counts as having been working, since the panel may open mid-run.
@@ -453,6 +469,7 @@ setMode(load('mode', 'folder'))
 
 $('open-url').innerHTML = ICONS.play
 function renderPlaylist(entries) {
+  save('playlist', entries)
   const playlist = entries.map((entry) => ({ url: entry.url }))
   $('playlist').replaceChildren(
     ...entries.map((entry, i) => {
@@ -487,4 +504,11 @@ $('youtube').onsubmit = async (event) => {
   } finally {
     $('open-url').disabled = false
   }
+}
+
+renderPlaylist(load('playlist', []))
+const session = load('session', null)
+if (session) {
+  const { time = 0, playing = false } = load('position', {})
+  openSource(session.source, session.siblings, time, playing)
 }
