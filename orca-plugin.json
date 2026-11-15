@@ -2,7 +2,7 @@
   "manifestVersion": 2,
   "id": "sidebar-player",
   "name": "Sidebar Player",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Watch videos in Orca's sidebar while agents work: files from your own folders, or YouTube videos and playlists. Playback pauses when an agent finishes or needs you.",
   "author": {
     "name": "Glaicer",
