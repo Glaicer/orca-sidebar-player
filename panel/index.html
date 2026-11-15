@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section id="player">
+      <div id="screen">
+        <video id="video" playsinline></video>
+        <div id="placeholder">Pick a video below</div>
+      </div>
+      <div class="row">
+        <span id="elapsed" class="time">0:00</span>
+        <input id="seek" type="range" min="0" max="0" step="0.1" value="0" aria-label="Seek" />
+        <span id="total" class="time">0:00</span>
+      </div>
+      <div id="controls">
+        <div class="row">
+          <button id="prev" class="icon" aria-label="Previous video"></button>
+          <button id="toggle" class="icon" aria-label="Play"></button>
+          <button id="next" class="icon" aria-label="Next video"></button>
+          <span id="busy" role="progressbar" aria-label="Loading" hidden></span>
+        </div>
+        <div id="modes" role="tablist" aria-label="Source">
+          <button id="mode-folder" role="tab" class="icon" aria-label="Folders" title="Folders"></button>
+          <button id="mode-youtube" role="tab" class="icon" aria-label="YouTube" title="YouTube"></button>
+        </div>
+        <div class="row">
+          <button id="mute" class="icon" aria-label="Mute"></button>
+          <input id="volume" type="range" min="0" max="1" step="0.05" aria-label="Volume" />
+        </div>
+      </div>
+      <select id="audio" aria-label="Audio track" hidden></select>
+      <div id="title"></div>
+      <div id="status" role="status"></div>
+    </section>
+    <nav id="tree" aria-label="Video folders"></nav>
+    <section id="web" hidden>
+      <form id="youtube">
+        <input id="url" type="url" required placeholder="YouTube video or playlist link" aria-label="YouTube link" />
+        <button id="open-url" type="submit" class="icon" aria-label="Play link"></button>
+      </form>
+      <nav id="playlist" aria-label="Playlist"></nav>
+    </section>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

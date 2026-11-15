@@ -1,0 +1,64 @@
+{
+  "manifestVersion": 2,
+  "id": "sidebar-player",
+  "name": "Sidebar Player",
+  "version": "1.0.0",
+  "description": "Watch videos in Orca's sidebar while agents work: files from your own folders, or YouTube videos and playlists. Playback pauses when an agent finishes or needs you.",
+  "author": {
+    "name": "Glaicer",
+    "url": "https://github.com/Glaicer"
+  },
+  "repository": "https://github.com/Glaicer/orca-sidebar-player",
+  "homepage": "https://github.com/Glaicer/orca-sidebar-player",
+  "license": "MIT",
+  "icon": "assets/icon.png",
+  "cover": {
+    "path": "public/cover.jpg",
+    "alt": "Sidebar Player in Orca's right sidebar, playing a video picked from a local folder tree"
+  },
+  "screenshots": [
+    {
+      "path": "public/screenshot-video.jpg",
+      "alt": "A local video playing in the sidebar above the folder tree, next to an agent session",
+      "theme": "dark"
+    },
+    {
+      "path": "public/screenshot-youtube.jpg",
+      "alt": "A YouTube playlist loaded in the sidebar, with the current video playing above the list",
+      "theme": "dark"
+    }
+  ],
+  "engines": {
+    "orca": ">=1.4.246"
+  },
+  "execution": "trusted-worker",
+  "pluginApi": 1,
+  "main": "worker/main.mjs",
+  "contributes": {
+    "panels": [
+      {
+        "id": "player",
+        "title": "Player",
+        "icon": "play",
+        "entry": "panel/index.html"
+      }
+    ],
+    "settings": [
+      {
+        "key": "roots",
+        "title": "Video folders, one per line",
+        "type": "string",
+        "default": "~",
+        "multiline": true
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "kind": "settings:own"
+    },
+    {
+      "kind": "agent:read"
+    }
+  ]
+}
